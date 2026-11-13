@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<addon scheme="3.0">
+    <id>interdes_delivery_estimate</id>
+    <version>1.0.2</version>
+    <priority>1000</priority>
+    <position>0</position>
+    <status>active</status>
+
+    <default_language>ru</default_language>
+
+    <name lang="ru">Стоимость и срок доставки на странице товара</name>
+    <name lang="en">Product page delivery estimate</name>
+
+    <description lang="ru">
+        Выводит под ценой товара блок со стоимостью и сроком доставки, рассчитанными реальными способами доставки (СДЭК, Яндекс.Доставка и т.п.).
+    </description>
+    <description lang="en">
+        Shows a block under the product price with delivery cost and time calculated by the actual shipping methods (CDEK, Yandex Delivery, etc.).
+    </description>
+
+    <supplier>Interdesign.ru</supplier>
+    <has_icon>N</has_icon>
+
+    <authors>
+        <author>
+            <name>Interdes</name>
+        </author>
+    </authors>
+
+    <compatibility>
+        <core_version>
+            <min>4.18.4</min>
+        </core_version>
+    </compatibility>
+
+    <settings layout="separate" edition_type="ROOT,ULT:VENDOR">
+        <sections>
+            <section id="general">
+                <items>
+                    <item id="show_all_shipping_methods">
+                        <type>checkbox</type>
+                        <default_value>Y</default_value>
+                        <translations>
+                            <item lang="ru">Показывать все способы доставки</item>
+                            <item lang="en">Show all shipping methods</item>
+                        </translations>
+                    </item>
+
+                    <item id="shipping_ids">
+                        <type>multiple checkboxes</type>
+                        <translations>
+                            <item lang="ru">Способы доставки для показа</item>
+                            <item lang="en">Shipping methods to show</item>
+                            <item lang="ru" for="tooltip">используется, если выключено "Показывать все способы доставки"</item>
+                            <item lang="en" for="tooltip">used when "Show all shipping methods" is off</item>
+                        </translations>
+                    </item>
+
+                    <item id="shipping_ids_toggle">
+                        <type>template</type>
+                        <default_value>shipping_ids_toggle.tpl</default_value>
+                    </item>
+
+                    <item id="default_city">
+                        <type>input</type>
+                        <default_value>Москва</default_value>
+                        <translations>
+                            <item lang="ru">Город по умолчанию</item>
+                            <item lang="en">Default city</item>
+                        </translations>
+                    </item>
+
+                    <item id="cache_ttl">
+                        <type>input</type>
+                        <default_value>86400</default_value>
+                        <translations>
+                            <item lang="ru">Время жизни кэша расчёта, сек.</item>
+                            <item lang="en">Rate cache lifetime, sec.</item>
+                        </translations>
+                    </item>
+                </items>
+            </section>
+        </sections>
+    </settings>
+
+    <queries>
+        <item for="install">
+            CREATE TABLE IF NOT EXISTS `?:interdes_delivery_estimate_cache` (
+                `cache_key` varchar(32) NOT NULL,
+                `data` mediumtext NOT NULL,
+                `expires_at` int(11) unsigned NOT NULL DEFAULT '0',
+                PRIMARY KEY (`cache_key`),
+                KEY `expires_at` (`expires_at`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        </item>
+
+        <item for="uninstall">
+            DROP TABLE IF EXISTS `?:interdes_delivery_estimate_cache`;
+        </item>
+    </queries>
+
+</addon>
